@@ -1,7 +1,6 @@
 import hashlib
 import json
-import getpass
-import os  # Module pour vérifier l'existence du fichier
+import getpass  # Module pour masquer la saisie du mot de passe
 
 def hash_password(password):
     # Fonction pour hacher le mot de passe avec SHA-256
@@ -15,10 +14,11 @@ def save_passwords(passwords):
 
 def load_passwords():
     # Charge les mots de passe depuis le fichier JSON
-    passwords = {}
-    if os.path.exists('passwords.json'):
+    try:
         with open('passwords.json', 'r') as file:
             passwords = json.load(file)
+    except FileNotFoundError:
+        passwords = {}
     return passwords
 
 def add_password():
@@ -45,7 +45,7 @@ def display_passwords():
 
 if __name__ == "__main__":
     while True:
-        print("Que désirez vous faire ?")
+        print("\nQue désirez vous faire :")
         print("1. Ajouter un nouveau mot de passe")
         print("2. Afficher les mots de passe")
         print("3. Quitter")
