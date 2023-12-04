@@ -46,9 +46,11 @@ def display_passwords():
 if __name__ == "__main__":
     while True:
         print("\nQue désirez vous faire :")
-        print("1. Ajouter un nouveau mot de passe")
-        print("2. Afficher les mots de passe")
+        print()
+        print("1. Ajouter mot de passe")
+        print("2. Afficher mots de passe")
         print("3. Quitter")
+        print()
 
         choice = input("Choisissez une option (1, 2 ou 3) : ")
 
@@ -57,7 +59,8 @@ if __name__ == "__main__":
         elif choice == '2':
             display_passwords()
         elif choice == '3':
-            print("Programme terminé.")
+            print()
+            print("Programme terminé")
             break
         else:
-            print("Option invalide. Veuillez choisir une option valide.")
+            print("Option invalide, veuillez choisir une option valide")
