@@ -1,66 +1,74 @@
 import hashlib
 import json
-import getpass  # Module pour masquer la saisie du mot de passe
+
+def is_password_secure(password):
+    return (
+        len(password) >= 8 and
+        any(c.isupper() for c in password) and
+        any(c.islower() for c in password) and
+        any(c.isdigit() for c in password) and
+        any(c in '!@#$%^&*' for c in password)
+    )
 
 def hash_password(password):
-    # Fonction pour hacher le mot de passe avec SHA-256
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    return hashed_password
+    return hashlib.sha256(password.encode()).hexdigest()
 
-def save_passwords(passwords):
-    # Enregistre les mots de passe hachés dans un fichier JSON
-    with open('passwords.json', 'w') as file:
-        json.dump(passwords, file)
-
-def load_passwords():
-    # Charge les mots de passe depuis le fichier JSON
+def save_password(username, hashed_password):
     try:
         with open('passwords.json', 'r') as file:
             passwords = json.load(file)
     except FileNotFoundError:
         passwords = {}
-    return passwords
 
-def add_password():
-    # Ajoute un nouveau mot de passe
-    username = input("Nom d'utilisateur : ")
-    password = getpass.getpass("Mot de passe : ")
-    hashed_password = hash_password(password)
-
-    passwords = load_passwords()
     passwords[username] = hashed_password
 
-    save_passwords(passwords)
-    print("Mot de passe ajouté avec succès!")
+    with open('passwords.json', 'w') as file:
+        json.dump(passwords, file)
 
-def display_passwords():
-    # Affiche les noms d'utilisateur et les mots de passe hachés
-    passwords = load_passwords()
-    if passwords:
-        print("Mots de passe enregistrés :")
-        for username, hashed_password in passwords.items():
-            print(f"Nom d'utilisateur: {username}, Mot de passe haché: {hashed_password}")
-    else:
-        print("Aucun mot de passe enregistré.")
-
-if __name__ == "__main__":
+def main():
     while True:
-        print("\nQue désirez vous faire :")
-        print()
-        print("1. Ajouter mot de passe")
-        print("2. Afficher mots de passe")
+        print("\nQue désirez-vous faire :")
+        print("1. Ajouter un mot de passe")
+        print("2. Afficher les mots de passe")
         print("3. Quitter")
-        print()
 
         choice = input("Choisissez une option (1, 2 ou 3) : ")
 
         if choice == '1':
-            add_password()
+            username = input("Nom d'utilisateur : ")
+            password = input("Mot de passe : ")
+
+            if is_password_secure(password):
+                hashed_password = hash_password(password)
+                save_password(username, hashed_password)
+                print("Mot de passe ajouté avec succès!")
+            else:
+                print("Le mot de passe ne respecte pas les exigences de sécurité. Veuillez en choisir un nouveau.")
+
         elif choice == '2':
             display_passwords()
+
         elif choice == '3':
-            print()
-            print("Programme terminé")
+            print("Programme terminé.")
             break
+
         else:
-            print("Option invalide, veuillez choisir une option valide")
+            print("Option invalide, veuillez choisir une option valide.")
+
+def display_passwords():
+    try:
+        with open('passwords.json', 'r') as file:
+            passwords = json.load(file)
+    except FileNotFoundError:
+        passwords = {}
+
+    if passwords:
+        print("Mots de passe enregistrés :")
+        for username, hashed_password in passwords.items():
+            print(f"Nom d'utilisateur : {username}") 
+            print("Mot de passe haché : {hashed_password}")
+    else:
+        print("Aucun mot de passe enregistré.")
+
+if __name__ == "__main__":
+    main()
