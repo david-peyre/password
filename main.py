@@ -1,7 +1,7 @@
 import hashlib
 import json
 
-def is_password_secure(password):
+def password_secure(password):
     return (
         len(password) >= 8 and
         any(c.isupper() for c in password) and
@@ -28,6 +28,7 @@ def save_password(username, hashed_password):
 def main():
     while True:
         print("\nQue désirez-vous faire :")
+        print()
         print("1. Ajouter un mot de passe")
         print("2. Afficher les mots de passe")
         print("3. Quitter")
@@ -38,12 +39,12 @@ def main():
             username = input("Nom d'utilisateur : ")
             password = input("Mot de passe : ")
 
-            if is_password_secure(password):
+            if password_secure(password):
                 hashed_password = hash_password(password)
                 save_password(username, hashed_password)
                 print("Mot de passe ajouté avec succès!")
             else:
-                print("Le mot de passe ne respecte pas les exigences de sécurité. Veuillez en choisir un nouveau.")
+                print("Le mot de passe ne respecte pas les exigences de sécurité. Veuillez en choisir un nouveau :")
 
         elif choice == '2':
             display_passwords()
@@ -65,8 +66,7 @@ def display_passwords():
     if passwords:
         print("Mots de passe enregistrés :")
         for username, hashed_password in passwords.items():
-            print(f"Nom d'utilisateur : {username}") 
-            print("Mot de passe haché : {hashed_password}")
+            print(f"Nom d'utilisateur : {username}, Mot de passe haché : {hashed_password}")
     else:
         print("Aucun mot de passe enregistré.")
 
